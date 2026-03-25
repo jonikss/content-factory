@@ -1,0 +1,508 @@
+
+<style>
+@import url('https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500&family=Onest:wght@400;500;600&display=swap');
+*{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --bg:#0c0d0f;--bg2:#141518;--bg3:#1c1d21;--bg4:#242529;
+  --border:#2a2b30;--border2:#353640;
+  --text:#e8e9ec;--text2:#9a9ba8;--text3:#5a5b68;
+  --accent:#7b6ef6;--accent2:#5b4fd4;
+  --green:#3ecf8e;--amber:#f5a623;--red:#f4645f;--blue:#4facf7;
+  --mono:'JetBrains Mono',monospace;--sans:'Onest',sans-serif;
+}
+body{background:var(--bg);color:var(--text);font-family:var(--sans);font-size:13px;line-height:1.5}
+.shell{display:flex;height:640px;border:1px solid var(--border);border-radius:12px;overflow:hidden}
+
+.sidebar{width:192px;flex-shrink:0;background:var(--bg2);border-right:1px solid var(--border);display:flex;flex-direction:column}
+.logo{padding:16px 14px 13px;display:flex;align-items:center;gap:8px;border-bottom:1px solid var(--border)}
+.logo-mark{width:26px;height:26px;background:var(--accent);border-radius:6px;display:flex;align-items:center;justify-content:center;flex-shrink:0}
+.logo-mark svg{width:13px;height:13px;fill:#fff}
+.logo-text{font-size:13px;font-weight:600;letter-spacing:-.2px}
+.logo-sub{font-size:9px;color:var(--text3);font-family:var(--mono);letter-spacing:.1em;text-transform:uppercase;margin-top:1px}
+nav{padding:8px 6px;flex:1}
+.nav-sec{font-size:9px;font-weight:500;color:var(--text3);letter-spacing:.1em;text-transform:uppercase;padding:10px 8px 4px}
+.nav-item{display:flex;align-items:center;gap:8px;padding:7px 8px;border-radius:6px;cursor:pointer;color:var(--text2);font-size:12px;font-weight:500;transition:.12s;margin-bottom:1px}
+.nav-item:hover{background:var(--bg3);color:var(--text)}
+.nav-item.on{background:var(--bg4);color:var(--text)}
+.nav-item svg{width:13px;height:13px;opacity:.65;flex-shrink:0}
+.nav-item.on svg{opacity:1}
+.nav-badge{margin-left:auto;font-size:10px;padding:1px 5px;border-radius:3px;font-family:var(--mono)}
+.nb-pu{background:rgba(123,110,246,.2);color:var(--accent)}
+.nb-gn{background:rgba(62,207,142,.15);color:var(--green)}
+.nb-am{background:rgba(245,166,35,.15);color:var(--amber)}
+.sidebar-footer{padding:8px 6px 12px;border-top:1px solid var(--border)}
+.model-pill{display:flex;align-items:center;gap:6px;padding:6px 8px;border-radius:6px;background:var(--bg3);font-size:10px;color:var(--text3);font-family:var(--mono)}
+.model-dot{width:5px;height:5px;border-radius:50%;background:var(--green);flex-shrink:0;box-shadow:0 0 4px var(--green)}
+
+.main{flex:1;display:flex;flex-direction:column;overflow:hidden}
+.topbar{height:46px;border-bottom:1px solid var(--border);display:flex;align-items:center;padding:0 18px;gap:10px;flex-shrink:0}
+.tb-title{font-size:14px;font-weight:600}
+.tb-sep{width:1px;height:14px;background:var(--border)}
+.tb-sub{font-size:11px;color:var(--text3);font-family:var(--mono)}
+.tb-actions{margin-left:auto;display:flex;gap:6px}
+.btn{padding:5px 11px;border-radius:6px;font-size:11px;font-weight:500;cursor:pointer;border:none;font-family:var(--sans);transition:.12s}
+.btn-primary{background:var(--accent);color:#fff}
+.btn-primary:hover{background:var(--accent2)}
+.btn-ghost{background:var(--bg3);color:var(--text2);border:1px solid var(--border)}
+.btn-ghost:hover{color:var(--text);border-color:var(--border2)}
+.btn-copy{background:var(--bg3);color:var(--text2);border:1px solid var(--border);padding:4px 9px;font-size:10px}
+.btn-copy:hover{color:var(--text)}
+.content{flex:1;overflow-y:auto;padding:16px 18px}
+.content::-webkit-scrollbar{width:3px}
+.content::-webkit-scrollbar-thumb{background:var(--border2);border-radius:2px}
+
+.screen{display:none}.screen.on{display:block}
+
+/* dashboard */
+.stats-row{display:grid;grid-template-columns:repeat(4,1fr);gap:7px;margin-bottom:16px}
+.stat{background:var(--bg2);border:1px solid var(--border);border-radius:8px;padding:11px 13px}
+.stat-lbl{font-size:10px;color:var(--text3);text-transform:uppercase;letter-spacing:.07em;margin-bottom:4px}
+.stat-val{font-size:21px;font-weight:600;font-family:var(--mono);letter-spacing:-1px}
+.stat-val.gn{color:var(--green)}.stat-val.pu{color:var(--accent)}.stat-val.am{color:var(--amber)}.stat-val.rd{color:var(--red)}
+.stat-delta{font-size:10px;color:var(--text3);margin-top:2px;font-family:var(--mono)}
+.sec-title{font-size:10px;font-weight:500;color:var(--text3);text-transform:uppercase;letter-spacing:.08em;margin-bottom:7px}
+.table-wrap{background:var(--bg2);border:1px solid var(--border);border-radius:8px;overflow:hidden}
+.t-head{display:grid;grid-template-columns:1fr 90px 70px 70px;gap:8px;padding:7px 13px;border-bottom:1px solid var(--border);font-size:10px;font-weight:500;color:var(--text3);text-transform:uppercase;letter-spacing:.06em}
+.t-row{display:grid;grid-template-columns:1fr 90px 70px 70px;gap:8px;padding:9px 13px;border-bottom:1px solid var(--border);align-items:center;cursor:pointer;transition:.1s}
+.t-row:last-child{border-bottom:none}
+.t-row:hover{background:var(--bg3)}
+.r-title{font-size:12px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.r-kw{font-size:10px;color:var(--text3);font-family:var(--mono);margin-top:1px}
+.tag{display:inline-flex;align-items:center;font-size:10px;padding:2px 6px;border-radius:4px;font-family:var(--mono);font-weight:500}
+.t-done{background:rgba(62,207,142,.1);color:var(--green)}
+.t-gen{background:rgba(123,110,246,.15);color:var(--accent)}
+.t-draft{background:rgba(154,155,168,.08);color:var(--text3)}
+.t-rej{background:rgba(244,100,95,.1);color:var(--red)}
+.r-score{font-family:var(--mono);font-size:12px}
+.r-time{font-size:10px;color:var(--text3);font-family:var(--mono)}
+
+/* generate screen */
+.gen-layout{display:grid;grid-template-columns:1fr 1fr;gap:12px;height:100%}
+.gen-left{display:flex;flex-direction:column;gap:10px}
+.gen-right{display:flex;flex-direction:column;gap:0;background:var(--bg2);border:1px solid var(--border);border-radius:8px;overflow:hidden}
+
+.input-card{background:var(--bg2);border:1px solid var(--border);border-radius:8px;padding:14px}
+.input-lbl{font-size:10px;color:var(--text3);text-transform:uppercase;letter-spacing:.07em;margin-bottom:6px}
+.kw-input{width:100%;background:var(--bg3);border:1px solid var(--border2);border-radius:6px;padding:8px 10px;color:var(--text);font-size:13px;font-family:var(--mono);outline:none;margin-bottom:10px}
+.kw-input:focus{border-color:var(--accent)}
+
+.stages{display:flex;flex-direction:column;gap:0}
+.stage-item{display:flex;align-items:flex-start;gap:9px;padding:8px 0;border-bottom:1px solid var(--border)}
+.stage-item:last-child{border-bottom:none}
+.stage-icon{width:20px;height:20px;border-radius:50%;border:1px solid var(--border2);display:flex;align-items:center;justify-content:center;flex-shrink:0;margin-top:1px;font-size:9px;font-family:var(--mono)}
+.stage-icon.idle{color:var(--text3)}
+.stage-icon.active{border-color:var(--accent);color:var(--accent);background:rgba(123,110,246,.1)}
+.stage-icon.done{border-color:var(--green);background:rgba(62,207,142,.1);color:var(--green)}
+.stage-name{font-size:12px;font-weight:500;color:var(--text2)}
+.stage-name.active{color:var(--text)}
+.stage-msg{font-size:10px;color:var(--text3);font-family:var(--mono);margin-top:1px}
+
+.preview-header{display:flex;align-items:center;justify-content:space-between;padding:10px 13px;border-bottom:1px solid var(--border);flex-shrink:0}
+.preview-tabs{display:flex;gap:1px}
+.ptab{padding:4px 10px;font-size:11px;font-weight:500;color:var(--text3);cursor:pointer;border-radius:5px;transition:.1s}
+.ptab.on{background:var(--bg4);color:var(--text)}
+.preview-actions{display:flex;gap:5px}
+.preview-body{flex:1;overflow-y:auto;padding:13px}
+.preview-body::-webkit-scrollbar{width:3px}
+.preview-body::-webkit-scrollbar-thumb{background:var(--border2);border-radius:2px}
+
+.art-h1{font-size:15px;font-weight:600;color:var(--text);margin-bottom:10px;line-height:1.4}
+.art-intro{font-size:12px;color:var(--text2);line-height:1.7;margin-bottom:12px;padding-bottom:12px;border-bottom:1px solid var(--border)}
+.art-section{margin-bottom:12px}
+.art-h2{font-size:12px;font-weight:600;color:var(--blue);margin-bottom:5px}
+.art-p{font-size:11px;color:var(--text2);line-height:1.7;margin-bottom:4px}
+.art-typing::after{content:'▋';animation:blink .6s step-end infinite;color:var(--accent);font-size:10px}
+@keyframes blink{0%,100%{opacity:1}50%{opacity:0}}
+
+.html-pre{font-family:var(--mono);font-size:10px;color:var(--text2);line-height:1.7;white-space:pre;overflow-x:auto;background:var(--bg3);padding:12px;border-radius:6px}
+.html-tag{color:var(--accent)}
+.html-attr{color:var(--amber)}
+.html-val{color:var(--green)}
+
+/* article detail */
+.article-layout{display:grid;grid-template-columns:1fr 200px;gap:12px}
+.article-main{background:var(--bg2);border:1px solid var(--border);border-radius:8px;overflow:hidden}
+.art-tabs-row{display:flex;align-items:center;justify-content:space-between;padding:9px 13px;border-bottom:1px solid var(--border)}
+.art-tab-btns{display:flex;gap:1px}
+.art-tab{padding:4px 10px;font-size:11px;font-weight:500;color:var(--text3);cursor:pointer;border-radius:5px}
+.art-tab.on{background:var(--bg4);color:var(--text)}
+.art-content{padding:14px;overflow-y:auto;max-height:490px}
+.art-content::-webkit-scrollbar{width:3px}
+.art-content::-webkit-scrollbar-thumb{background:var(--border2);border-radius:2px}
+
+.seo-panel{display:flex;flex-direction:column;gap:6px}
+.seo-card{background:var(--bg2);border:1px solid var(--border);border-radius:8px;padding:11px 12px}
+.seo-card-title{font-size:10px;font-weight:500;color:var(--text3);text-transform:uppercase;letter-spacing:.07em;margin-bottom:8px}
+.seo-field{margin-bottom:8px}
+.seo-field:last-child{margin-bottom:0}
+.seo-field-lbl{font-size:9px;color:var(--text3);text-transform:uppercase;letter-spacing:.06em;margin-bottom:3px}
+.seo-field-val{font-size:11px;color:var(--text2);font-family:var(--mono);word-break:break-all}
+.score-big{font-size:28px;font-weight:600;font-family:var(--mono);color:var(--green);letter-spacing:-1px}
+.score-lbl{font-size:10px;color:var(--text3);margin-top:1px}
+
+/* settings */
+.settings-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.sc{background:var(--bg2);border:1px solid var(--border);border-radius:8px;padding:13px 14px}
+.sc-title{font-size:12px;font-weight:600;margin-bottom:11px}
+.f-row{margin-bottom:9px}
+.f-lbl{font-size:9px;color:var(--text3);text-transform:uppercase;letter-spacing:.06em;margin-bottom:3px}
+.f-inp{width:100%;background:var(--bg3);border:1px solid var(--border);border-radius:5px;padding:5px 8px;color:var(--text);font-size:11px;font-family:var(--mono);outline:none}
+.f-inp:focus{border-color:var(--accent)}
+.f-sel{width:100%;background:var(--bg3);border:1px solid var(--border);border-radius:5px;padding:5px 8px;color:var(--text);font-size:11px;outline:none}
+.tog-row{display:flex;align-items:center;justify-content:space-between;padding:7px 0;border-bottom:1px solid var(--border)}
+.tog-row:last-child{border-bottom:none}
+.tog-lbl{font-size:11px;color:var(--text2)}
+.tog{width:30px;height:16px;background:var(--bg4);border-radius:8px;position:relative;cursor:pointer;border:1px solid var(--border2);transition:.2s;flex-shrink:0}
+.tog.on{background:var(--accent);border-color:var(--accent)}
+.tog::after{content:'';position:absolute;width:10px;height:10px;background:#fff;border-radius:50%;top:2px;left:2px;transition:.2s;opacity:.8}
+.tog.on::after{left:16px}
+</style>
+
+<div class="shell">
+  <div class="sidebar">
+    <div class="logo">
+      <div class="logo-mark">
+        <svg viewBox="0 0 14 14"><path d="M2 2h4v4H2zm6 0h4v4H8zM2 8h4v4H2zm6 2h2v2H8zm2-2h2v2h-2z"/></svg>
+      </div>
+      <div><div class="logo-text">ContentFactory</div><div class="logo-sub">MVP v0.1</div></div>
+    </div>
+    <nav>
+      <div class="nav-sec">Основное</div>
+      <div class="nav-item on" onclick="go('dash',this)">
+        <svg viewBox="0 0 14 14" fill="currentColor"><rect x="1" y="1" width="5" height="5" rx="1"/><rect x="8" y="1" width="5" height="5" rx="1"/><rect x="1" y="8" width="5" height="5" rx="1"/><rect x="8" y="8" width="5" height="5" rx="1"/></svg>
+        Дашборд<span class="nav-badge nb-gn">live</span>
+      </div>
+      <div class="nav-item" onclick="go('gen',this)">
+        <svg viewBox="0 0 14 14" fill="currentColor"><path d="M7 1v12M1 7h12" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg>
+        Генерация<span class="nav-badge nb-pu">new</span>
+      </div>
+      <div class="nav-item" onclick="go('articles',this)">
+        <svg viewBox="0 0 14 14" fill="currentColor"><path d="M2 1h10a1 1 0 011 1v10a1 1 0 01-1 1H2a1 1 0 01-1-1V2a1 1 0 011-1zm1 3h8v1H3V4zm0 2h8v1H3V6zm0 2h5v1H3V8z"/></svg>
+        Статьи<span class="nav-badge nb-am">2</span>
+      </div>
+      <div class="nav-sec">Система</div>
+      <div class="nav-item" onclick="go('settings',this)">
+        <svg viewBox="0 0 14 14" fill="currentColor"><path d="M7 4.5a2.5 2.5 0 100 5 2.5 2.5 0 000-5zM1 7l1.2-2.1-.8-2.2 2.3-.7L5.1 1 7 1.8 8.9 1l1.4 1 2.3.7-.8 2.2L13 7l-1.2 2.1.8 2.2-2.3.7L8.9 13 7 12.2 5.1 13l-1.4-1-2.3-.7.8-2.2L1 7z"/></svg>
+        Настройки
+      </div>
+    </nav>
+    <div class="sidebar-footer">
+      <div class="model-pill"><div class="model-dot"></div>claude-sonnet-4-6</div>
+    </div>
+  </div>
+
+  <div class="main">
+    <div class="topbar">
+      <div class="tb-title" id="tb-t">Дашборд</div>
+      <div class="tb-sep"></div>
+      <div class="tb-sub" id="tb-s">7 статей всего</div>
+      <div class="tb-actions">
+        <button class="btn btn-primary" onclick="go('gen',null)">+ Новая статья</button>
+      </div>
+    </div>
+
+    <div class="content">
+
+      <!-- DASH -->
+      <div class="screen on" id="s-dash">
+        <div class="stats-row">
+          <div class="stat"><div class="stat-lbl">Готово</div><div class="stat-val gn">5</div><div class="stat-delta">+2 сегодня</div></div>
+          <div class="stat"><div class="stat-lbl">В процессе</div><div class="stat-val pu">1</div><div class="stat-delta">~40 сек</div></div>
+          <div class="stat"><div class="stat-lbl">Отклонено</div><div class="stat-val rd">1</div><div class="stat-delta">score &lt; 75</div></div>
+          <div class="stat"><div class="stat-lbl">Avg score</div><div class="stat-val" style="color:var(--text)">87</div><div class="stat-delta">за всё время</div></div>
+        </div>
+        <div class="sec-title">Статьи</div>
+        <div class="table-wrap">
+          <div class="t-head"><div>Статья</div><div>Статус</div><div>Score</div><div>Время</div></div>
+          <div class="t-row" onclick="go('detail',null)">
+            <div><div class="r-title">Как выбрать диван в Москве: гид 2025</div><div class="r-kw">купить диван москва</div></div>
+            <div><span class="tag t-done">done</span></div>
+            <div class="r-score" style="color:var(--green)">91</div>
+            <div class="r-time">10:34</div>
+          </div>
+          <div class="t-row" onclick="go('detail',null)">
+            <div><div class="r-title">Ремонт квартиры под ключ: цены и этапы</div><div class="r-kw">ремонт квартиры под ключ</div></div>
+            <div><span class="tag t-done">done</span></div>
+            <div class="r-score" style="color:var(--green)">88</div>
+            <div class="r-time">09:12</div>
+          </div>
+          <div class="t-row">
+            <div><div class="r-title">Натяжные потолки: виды и цены</div><div class="r-kw">натяжные потолки цена</div></div>
+            <div><span class="tag t-gen">generating</span></div>
+            <div class="r-score" style="color:var(--text3)">—</div>
+            <div class="r-time">11:02</div>
+          </div>
+          <div class="t-row">
+            <div><div class="r-title">Ламинат или паркет: что выбрать</div><div class="r-kw">ламинат или паркет</div></div>
+            <div><span class="tag t-rej">rejected</span></div>
+            <div class="r-score" style="color:var(--red)">62</div>
+            <div class="r-time">08:55</div>
+          </div>
+          <div class="t-row" onclick="go('detail',null)">
+            <div><div class="r-title">Шкаф-купе на заказ: как выбрать</div><div class="r-kw">шкаф-купе на заказ</div></div>
+            <div><span class="tag t-done">done</span></div>
+            <div class="r-score" style="color:var(--green)">85</div>
+            <div class="r-time">08:20</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- GENERATE -->
+      <div class="screen" id="s-gen">
+        <div class="gen-layout" style="height:530px">
+          <div class="gen-left">
+            <div class="input-card">
+              <div class="input-lbl">Ключевой запрос</div>
+              <input class="kw-input" placeholder="напр. купить диван москва" value="теплый пол под плитку">
+              <button class="btn btn-primary" style="width:100%;padding:8px" onclick="startDemo()">Сгенерировать</button>
+            </div>
+            <div class="input-card" style="flex:1">
+              <div class="input-lbl">Прогресс</div>
+              <div class="stages" id="stages">
+                <div class="stage-item">
+                  <div class="stage-icon done" id="ic-research">✓</div>
+                  <div><div class="stage-name" style="color:var(--text)">Research</div><div class="stage-msg" style="color:var(--green)">ТОП-5 конкурентов проанализированы</div></div>
+                </div>
+                <div class="stage-item">
+                  <div class="stage-icon done" id="ic-brief">✓</div>
+                  <div><div class="stage-name" style="color:var(--text)">Brief</div><div class="stage-msg" style="color:var(--green)">ТЗ составлено · 6 разделов</div></div>
+                </div>
+                <div class="stage-item">
+                  <div class="stage-icon active" id="ic-article">●</div>
+                  <div><div class="stage-name active">Article</div><div class="stage-msg">Пишем раздел 3 из 6...</div></div>
+                </div>
+                <div class="stage-item">
+                  <div class="stage-icon idle" id="ic-seo">4</div>
+                  <div><div class="stage-name">SEO Meta</div><div class="stage-msg">ожидание</div></div>
+                </div>
+                <div class="stage-item">
+                  <div class="stage-icon idle" id="ic-quality">5</div>
+                  <div><div class="stage-name">Quality Gate</div><div class="stage-msg">ожидание</div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="gen-right">
+            <div class="preview-header">
+              <div class="preview-tabs">
+                <div class="ptab on" onclick="ptab(this,'pv-preview')">Превью</div>
+                <div class="ptab" onclick="ptab(this,'pv-html')">HTML</div>
+              </div>
+              <div class="preview-actions">
+                <button class="btn btn-copy" onclick="sendPrompt('Как скопировать готовый HTML статьи в буфер обмена?')">Копировать HTML</button>
+                <button class="btn btn-copy" onclick="sendPrompt('Как скопировать мета-теги статьи?')">Копировать мета</button>
+              </div>
+            </div>
+            <div class="preview-body" id="pv-preview" style="display:block">
+              <div class="art-h1">Тёплый пол под плитку: полный гид по выбору и монтажу 2025</div>
+              <div class="art-intro">Тёплый пол под плитку — один из самых популярных видов напольного обогрева в России. В этой статье разберём виды систем, их особенности и стоимость монтажа...</div>
+              <div class="art-section">
+                <div class="art-h2">Виды тёплых полов под плитку</div>
+                <div class="art-p">Существует два основных вида систем тёплого пола под плитку: электрические и водяные. Каждый имеет свои преимущества и ограничения по применению.</div>
+                <div class="art-p">Электрические системы делятся на кабельные маты, инфракрасные плёнки и стержневые системы. Водяные подключаются к системе отопления дома.</div>
+              </div>
+              <div class="art-section">
+                <div class="art-h2">Как выбрать мощность системы</div>
+                <div class="art-p">Для обогрева основного помещения необходимо 150–180 Вт/м², для дополнительного комфорта достаточно 100–120 Вт/м². Ванная и санузел требуют...</div>
+              </div>
+              <div class="art-section">
+                <div class="art-h2 art-typing">Монтаж тёплого пола под плитку: пошагово</div>
+              </div>
+            </div>
+            <div class="preview-body" id="pv-html" style="display:none">
+              <div class="html-pre"><span class="html-tag">&lt;article</span> <span class="html-attr">class</span>=<span class="html-val">"seo-article"</span><span class="html-tag">&gt;</span>
+
+<span class="html-tag">&lt;h1&gt;</span>Тёплый пол под плитку: полный гид...<span class="html-tag">&lt;/h1&gt;</span>
+
+<span class="html-tag">&lt;p</span> <span class="html-attr">class</span>=<span class="html-val">"intro"</span><span class="html-tag">&gt;</span>Тёплый пол под плитку — один из...<span class="html-tag">&lt;/p&gt;</span>
+
+<span class="html-tag">&lt;section&gt;</span>
+  <span class="html-tag">&lt;h2&gt;</span>Виды тёплых полов под плитку<span class="html-tag">&lt;/h2&gt;</span>
+  <span class="html-tag">&lt;p&gt;</span>Существует два основных вида...<span class="html-tag">&lt;/p&gt;</span>
+<span class="html-tag">&lt;/section&gt;</span>
+
+<span class="html-tag">&lt;section&gt;</span>
+  <span class="html-tag">&lt;h2&gt;</span>Как выбрать мощность системы<span class="html-tag">&lt;/h2&gt;</span>
+  <span class="html-tag">&lt;p&gt;</span>Для обогрева основного...<span class="html-tag">&lt;/p&gt;</span>
+<span class="html-tag">&lt;/section&gt;</span>
+
+<span class="html-tag">&lt;/article&gt;</span></div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ARTICLES -->
+      <div class="screen" id="s-articles">
+        <div style="display:flex;gap:6px;margin-bottom:12px;align-items:center">
+          <input style="flex:1;background:var(--bg2);border:1px solid var(--border);border-radius:6px;padding:6px 9px;color:var(--text);font-size:12px;font-family:var(--mono);outline:none" placeholder="Поиск...">
+          <button class="filter-btn on" style="padding:5px 10px;border-radius:6px;font-size:11px;font-weight:500;border:1px solid var(--border2);background:var(--bg3);color:var(--text);cursor:pointer">Все</button>
+          <button class="filter-btn" style="padding:5px 10px;border-radius:6px;font-size:11px;font-weight:500;border:1px solid var(--border);background:var(--bg2);color:var(--text2);cursor:pointer">Готово</button>
+          <button class="filter-btn" style="padding:5px 10px;border-radius:6px;font-size:11px;font-weight:500;border:1px solid var(--border);background:var(--bg2);color:var(--text2);cursor:pointer">Отклонено</button>
+        </div>
+        <div class="table-wrap">
+          <div class="t-head"><div>Статья</div><div>Статус</div><div>Score</div><div>Дата</div></div>
+          <div class="t-row" onclick="go('detail',null)">
+            <div><div class="r-title">Как выбрать диван в Москве: гид 2025</div><div class="r-kw">купить диван москва</div></div>
+            <div><span class="tag t-done">done</span></div>
+            <div class="r-score" style="color:var(--green)">91</div>
+            <div class="r-time">сегодня</div>
+          </div>
+          <div class="t-row" onclick="go('detail',null)">
+            <div><div class="r-title">Ремонт квартиры под ключ: цены и этапы</div><div class="r-kw">ремонт квартиры под ключ</div></div>
+            <div><span class="tag t-done">done</span></div>
+            <div class="r-score" style="color:var(--green)">88</div>
+            <div class="r-time">сегодня</div>
+          </div>
+          <div class="t-row" style="opacity:.5">
+            <div><div class="r-title">Ламинат или паркет: что выбрать</div><div class="r-kw">ламинат или паркет · hint: добавить сравнительную таблицу</div></div>
+            <div><span class="tag t-rej">rejected</span></div>
+            <div class="r-score" style="color:var(--red)">62</div>
+            <div class="r-time">сегодня</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- DETAIL -->
+      <div class="screen" id="s-detail">
+        <div class="article-layout" style="min-height:530px">
+          <div class="article-main">
+            <div class="art-tabs-row">
+              <div class="art-tab-btns">
+                <div class="art-tab on" onclick="atab(this,'at-preview')">Превью</div>
+                <div class="art-tab" onclick="atab(this,'at-html')">HTML</div>
+                <div class="art-tab" onclick="atab(this,'at-meta')">Мета-теги</div>
+              </div>
+              <div style="display:flex;gap:5px">
+                <button class="btn btn-copy">Копировать HTML</button>
+                <button class="btn btn-copy">Копировать мета</button>
+                <button class="btn btn-ghost" style="font-size:11px" onclick="go('gen',null)">Регенерировать</button>
+              </div>
+            </div>
+            <div class="art-content" id="at-preview" style="display:block">
+              <div class="art-h1">Как выбрать диван в Москве: полный гид покупателя 2025</div>
+              <div class="art-intro">Купить диван в Москве — задача, с которой ежегодно сталкиваются тысячи покупателей. Разнообразие форматов, тканей и производителей может запутать. В этом гиде разбираем всё что нужно знать перед покупкой.</div>
+              <div class="art-section"><div class="art-h2">Типы диванов: угловые, прямые, модульные</div><div class="art-p">Прямые диваны универсальны и подходят для большинства комнат. Угловые диваны занимают больше места, но предоставляют максимум сидячих мест. Модульные системы позволяют гибко менять конфигурацию.</div></div>
+              <div class="art-section"><div class="art-h2">На что обратить внимание при выборе</div><div class="art-p">Размер дивана должен соответствовать площади комнаты: оставьте не менее 90 см прохода с каждой стороны. Механизм трансформации влияет на удобство ежедневного использования.</div></div>
+              <div class="art-section"><div class="art-h2">Цены на диваны в Москве: из чего складываются</div><div class="art-p">Стоимость зависит от производителя, материала обивки и механизма. Бюджетные модели начинаются от 15 000 рублей, диваны среднего сегмента — 40 000–100 000 рублей.</div></div>
+            </div>
+            <div class="art-content" id="at-html" style="display:none">
+              <div class="html-pre"><span class="html-tag">&lt;article</span> <span class="html-attr">class</span>=<span class="html-val">"seo-article"</span><span class="html-tag">&gt;</span>
+<span class="html-tag">&lt;h1&gt;</span>Как выбрать диван в Москве...<span class="html-tag">&lt;/h1&gt;</span>
+<span class="html-tag">&lt;p</span> <span class="html-attr">class</span>=<span class="html-val">"intro"</span><span class="html-tag">&gt;</span>Купить диван в Москве — задача...<span class="html-tag">&lt;/p&gt;</span>
+<span class="html-tag">&lt;section&gt;</span>
+  <span class="html-tag">&lt;h2&gt;</span>Типы диванов: угловые, прямые...<span class="html-tag">&lt;/h2&gt;</span>
+  <span class="html-tag">&lt;p&gt;</span>Прямые диваны универсальны...<span class="html-tag">&lt;/p&gt;</span>
+<span class="html-tag">&lt;/section&gt;</span></div>
+            </div>
+            <div class="art-content" id="at-meta" style="display:none">
+              <div class="html-pre"><span class="html-tag">&lt;title&gt;</span>Купить диван в Москве | Гид 2025<span class="html-tag">&lt;/title&gt;</span>
+<span class="html-tag">&lt;meta</span> <span class="html-attr">name</span>=<span class="html-val">"description"</span>
+      <span class="html-attr">content</span>=<span class="html-val">"Как выбрать диван в Москве: типы, цены, советы покупателям. Полный гид 2025."</span><span class="html-tag">&gt;</span>
+<span class="html-tag">&lt;meta</span> <span class="html-attr">name</span>=<span class="html-val">"keywords"</span>
+      <span class="html-attr">content</span>=<span class="html-val">"купить диван москва, диван цена, угловой диван"</span><span class="html-tag">&gt;</span>
+<span class="html-tag">&lt;link</span> <span class="html-attr">rel</span>=<span class="html-val">"canonical"</span>
+      <span class="html-attr">href</span>=<span class="html-val">"https://site.ru/kupit-divan-moskva"</span><span class="html-tag">&gt;</span></div>
+            </div>
+          </div>
+
+          <div class="seo-panel">
+            <div class="seo-card">
+              <div class="seo-card-title">Quality score</div>
+              <div class="score-big">91</div>
+              <div class="score-lbl" style="color:var(--green)">✓ Отличное качество</div>
+            </div>
+            <div class="seo-card">
+              <div class="seo-card-title">SEO поля</div>
+              <div class="seo-field"><div class="seo-field-lbl">Focus keyword</div><div class="seo-field-val">купить диван москва</div></div>
+              <div class="seo-field"><div class="seo-field-lbl">Slug</div><div class="seo-field-val">kupit-divan-moskva</div></div>
+              <div class="seo-field"><div class="seo-field-lbl">Title длина</div><div class="seo-field-val" style="color:var(--green)">52 симв ✓</div></div>
+              <div class="seo-field"><div class="seo-field-lbl">Desc длина</div><div class="seo-field-val" style="color:var(--green)">141 симв ✓</div></div>
+            </div>
+            <div class="seo-card">
+              <div class="seo-card-title">Статья</div>
+              <div class="seo-field"><div class="seo-field-lbl">Слов</div><div class="seo-field-val">2 180</div></div>
+              <div class="seo-field"><div class="seo-field-lbl">Разделов H2</div><div class="seo-field-val">6</div></div>
+              <div class="seo-field"><div class="seo-field-lbl">Создана</div><div class="seo-field-val">сегодня 10:34</div></div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- SETTINGS -->
+      <div class="screen" id="s-settings">
+        <div class="settings-grid">
+          <div class="sc">
+            <div class="sc-title">LLM конфигурация</div>
+            <div class="f-row"><div class="f-lbl">Модель (черновики / fast)</div><select class="f-sel"><option>anthropic/claude-haiku-3-5</option><option>google/gemini-2.0-flash</option><option>openai/gpt-4o-mini</option></select></div>
+            <div class="f-row"><div class="f-lbl">Модель (статьи / quality)</div><select class="f-sel"><option>anthropic/claude-sonnet-4-6</option><option>openai/gpt-4o</option><option>mistralai/mistral-large</option></select></div>
+            <div class="f-row"><div class="f-lbl">OpenRouter API Key</div><input class="f-inp" type="password" value="sk-or-••••••••••••"></div>
+          </div>
+          <div class="sc">
+            <div class="sc-title">Качество</div>
+            <div class="f-row"><div class="f-lbl">Минимальный score</div><input class="f-inp" value="75"></div>
+            <div class="f-row"><div class="f-lbl">Мин. слов в статье</div><input class="f-inp" value="1500"></div>
+            <div class="f-row"><div class="f-lbl">Макс. секций H2</div><input class="f-inp" value="7"></div>
+          </div>
+          <div class="sc">
+            <div class="sc-title">Генерация</div>
+            <div class="tog-row"><span class="tog-lbl">SERP скрапинг конкурентов</span><div class="tog on" onclick="this.classList.toggle('on')"></div></div>
+            <div class="tog-row"><span class="tog-lbl">OutputFixingParser (авторетрай)</span><div class="tog on" onclick="this.classList.toggle('on')"></div></div>
+            <div class="tog-row"><span class="tog-lbl">Показывать HTML вкладку</span><div class="tog on" onclick="this.classList.toggle('on')"></div></div>
+            <div class="tog-row"><span class="tog-lbl">Авто-копирование после генерации</span><div class="tog" onclick="this.classList.toggle('on')"></div></div>
+          </div>
+          <div class="sc">
+            <div class="sc-title">Разметка HTML</div>
+            <div class="tog-row"><span class="tog-lbl">Оборачивать в &lt;article&gt;</span><div class="tog on" onclick="this.classList.toggle('on')"></div></div>
+            <div class="tog-row"><span class="tog-lbl">Добавлять class="intro"</span><div class="tog on" onclick="this.classList.toggle('on')"></div></div>
+            <div class="tog-row"><span class="tog-lbl">Конвертировать списки в &lt;ul&gt;</span><div class="tog on" onclick="this.classList.toggle('on')"></div></div>
+            <div class="tog-row"><span class="tog-lbl">**bold** → &lt;strong&gt;</span><div class="tog on" onclick="this.classList.toggle('on')"></div></div>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</div>
+
+<script>
+const titles={dash:'Дашборд',gen:'Новая статья',articles:'Статьи',detail:'Просмотр статьи',settings:'Настройки'}
+const subs={dash:'7 статей всего',gen:'введите ключевой запрос и запустите генерацию',articles:'7 статей · 5 готово · 1 отклонено',detail:'купить диван москва',settings:'конфигурация системы'}
+
+function go(id,el){
+  document.querySelectorAll('.screen').forEach(s=>s.classList.remove('on'))
+  document.querySelectorAll('.nav-item').forEach(n=>n.classList.remove('on'))
+  document.getElementById('s-'+id).classList.add('on')
+  if(el) el.classList.add('on')
+  else {
+    document.querySelectorAll('.nav-item').forEach(n=>{
+      if(n.getAttribute('onclick')?.includes("'"+id+"'")) n.classList.add('on')
+    })
+  }
+  document.getElementById('tb-t').textContent=titles[id]||id
+  document.getElementById('tb-s').textContent=subs[id]||''
+}
+
+function ptab(el,target){
+  document.querySelectorAll('.ptab').forEach(t=>t.classList.remove('on'))
+  el.classList.add('on')
+  ;['pv-preview','pv-html'].forEach(id=>{
+    const el=document.getElementById(id)
+    if(el) el.style.display=id===target?'block':'none'
+  })
+}
+
+function atab(el,target){
+  document.querySelectorAll('.art-tab').forEach(t=>t.classList.remove('on'))
+  el.classList.add('on')
+  ;['at-preview','at-html','at-meta'].forEach(id=>{
+    const el=document.getElementById(id)
+    if(el) el.style.display=id===target?'block':'none'
+  })
+}
+
+function startDemo(){
+  go('gen', document.querySelector('.nav-item:nth-child(3)'))
+}
+</script>
