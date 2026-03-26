@@ -1,37 +1,37 @@
-'use client'
+"use client";
 
-import { useState } from 'react'
-import { Topbar } from '@shared/ui'
-import { ArticlesTable } from '@widgets/articles-table'
-import { useArticles } from '@entities/article'
-import type { Article } from '@shared/api'
+import { useState } from "react";
+import { Topbar } from "@shared/ui";
+import { ArticlesTable } from "@widgets/articles-table";
+import { useArticles } from "@entities/article";
+import type { Article } from "@shared/api";
 
 const filters = [
-  { label: 'Все', value: undefined },
-  { label: 'Готово', value: 'done' },
-  { label: 'Отклонено', value: 'rejected' },
-] as const
+  { label: "Все", value: undefined },
+  { label: "Готово", value: "done" },
+  { label: "Отклонено", value: "rejected" },
+] as const;
 
 export default function ArticlesPage() {
-  const [statusFilter, setStatusFilter] = useState<string | undefined>()
-  const [search, setSearch] = useState('')
+  const [statusFilter, setStatusFilter] = useState<string | undefined>();
+  const [search, setSearch] = useState("");
 
-  const { data: articles = [], isLoading } = useArticles()
+  const { data: articles = [], isLoading } = useArticles();
 
   const filtered = articles.filter((a) => {
     if (search) {
-      const s = search.toLowerCase()
+      const s = search.toLowerCase();
       const matchesSearch =
         a.keyword_text.toLowerCase().includes(s) ||
-        a.title?.toLowerCase().includes(s)
-      if (!matchesSearch) return false
+        a.title?.toLowerCase().includes(s);
+      if (!matchesSearch) return false;
     }
-    if (statusFilter && a.status !== statusFilter) return false
-    return true
-  })
+    if (statusFilter && a.status !== statusFilter) return false;
+    return true;
+  });
 
-  const doneCount = articles.filter((a) => a.status === 'done').length
-  const rejectedCount = articles.filter((a) => a.status === 'rejected').length
+  const doneCount = articles.filter((a) => a.status === "done").length;
+  const rejectedCount = articles.filter((a) => a.status === "rejected").length;
 
   return (
     <>
@@ -54,8 +54,8 @@ export default function ArticlesPage() {
               onClick={() => setStatusFilter(f.value)}
               className={`px-2.5 py-1.5 rounded-md text-[11px] font-medium border transition-colors ${
                 statusFilter === f.value
-                  ? 'bg-bg3 text-text border-border2'
-                  : 'bg-bg2 text-text2 border-border hover:text-text'
+                  ? "bg-bg3 text-text border-border2"
+                  : "bg-bg2 text-text2 border-border hover:text-text"
               }`}
             >
               {f.label}
@@ -70,5 +70,5 @@ export default function ArticlesPage() {
         )}
       </div>
     </>
-  )
+  );
 }

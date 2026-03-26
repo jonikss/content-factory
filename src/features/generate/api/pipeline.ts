@@ -4,7 +4,7 @@ import { runBriefChain, type Brief } from "./chains/brief";
 import { runArticleChain } from "./chains/article";
 import { runSeoChain } from "./chains/seo";
 import { runQualityChain, type QualityResult } from "./chains/quality";
-import { scrapeSerp } from "./serp-scraper"
+import { scrapeSerp } from "./serp-scraper";
 
 import { buildHtml, buildMetaSnippet } from "@shared/lib";
 import type { ArticleContentJson, SeoMeta } from "@shared/api";

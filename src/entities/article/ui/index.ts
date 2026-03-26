@@ -1,2 +1,2 @@
-export { ArticlePreview } from './article-preview'
-export { ArticleDetail } from './article-detail'
+export { ArticlePreview } from "./article-preview";
+export { ArticleDetail } from "./article-detail";

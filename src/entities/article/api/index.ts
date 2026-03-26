@@ -1,1 +1,1 @@
-export { useArticles } from './queries'
+export { useArticles } from "./queries";

@@ -1,1 +1,1 @@
-export { StreamProgress } from './stream-progress'
+export { StreamProgress } from "./stream-progress";

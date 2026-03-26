@@ -1,31 +1,38 @@
-'use client'
+"use client";
 
-import { useState } from 'react'
-import Link from 'next/link'
-import { Topbar } from '@shared/ui'
-import { StreamProgress, useGenerateStream, type StreamEvent } from '@features/generate'
-import { ArticlePreview } from '@entities/article'
+import { useState } from "react";
+import Link from "next/link";
+import { Topbar } from "@shared/ui";
+import {
+  StreamProgress,
+  useGenerateStream,
+  type StreamEvent,
+} from "@features/generate";
+import { ArticlePreview } from "@entities/article";
 
 export default function GeneratePage() {
-  const [keyword, setKeyword] = useState('')
-  const { generate, events, running, articleId, sections, error } = useGenerateStream()
+  const [keyword, setKeyword] = useState("");
+  const { generate, events, running, sections, error } = useGenerateStream();
 
   // Extract data from events
   const briefData = events.find(
-    (e): e is StreamEvent & { type: 'stage_done' } =>
-      e.type === 'stage_done' && 'stage' in e && e.stage === 'brief'
-  )
-  const brief = briefData && 'data' in briefData ? (briefData.data as { title?: string; h2_sections?: string[] }) : null
+    (e): e is StreamEvent & { type: "stage_done" } =>
+      e.type === "stage_done" && "stage" in e && e.stage === "brief",
+  );
+  const brief =
+    briefData && "data" in briefData
+      ? (briefData.data as { title?: string; h2_sections?: string[] })
+      : null;
 
   const doneEvent = events.find(
-    (e): e is StreamEvent & { type: 'done' } => e.type === 'done'
-  )
+    (e): e is StreamEvent & { type: "done" } => e.type === "done",
+  );
 
   const handleGenerate = () => {
     if (keyword.trim() && !running) {
-      generate(keyword.trim())
+      generate(keyword.trim());
     }
-  }
+  };
 
   return (
     <>
@@ -35,7 +42,10 @@ export default function GeneratePage() {
         actions={<></>}
       />
       <div className="flex-1 overflow-y-auto p-4">
-        <div className="grid grid-cols-2 gap-3 h-full" style={{ minHeight: '530px' }}>
+        <div
+          className="grid grid-cols-2 gap-3 h-full"
+          style={{ minHeight: "530px" }}
+        >
           {/* Left column */}
           <div className="flex flex-col gap-2.5">
             {/* Input card */}
@@ -48,7 +58,7 @@ export default function GeneratePage() {
                 placeholder="напр. купить диван москва"
                 value={keyword}
                 onChange={(e) => setKeyword(e.target.value)}
-                onKeyDown={(e) => e.key === 'Enter' && handleGenerate()}
+                onKeyDown={(e) => e.key === "Enter" && handleGenerate()}
                 disabled={running}
               />
               <button
@@ -56,7 +66,7 @@ export default function GeneratePage() {
                 disabled={running || !keyword.trim()}
                 className="w-full py-2 rounded-md text-[11px] font-medium bg-accent text-white hover:bg-accent2 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
               >
-                {running ? 'Генерация...' : 'Сгенерировать'}
+                {running ? "Генерация..." : "Сгенерировать"}
               </button>
             </div>
 
@@ -92,10 +102,10 @@ export default function GeneratePage() {
                     <span
                       className={`font-mono text-sm font-semibold ${
                         doneEvent.score >= 75
-                          ? 'text-green'
+                          ? "text-green"
                           : doneEvent.score >= 50
-                            ? 'text-amber'
-                            : 'text-red'
+                            ? "text-amber"
+                            : "text-red"
                       }`}
                     >
                       {doneEvent.score}
@@ -105,7 +115,9 @@ export default function GeneratePage() {
                     </span>
                   </div>
                   {doneEvent.hint && (
-                    <div className="text-[10px] text-amber">{doneEvent.hint}</div>
+                    <div className="text-[10px] text-amber">
+                      {doneEvent.hint}
+                    </div>
                   )}
                   <div className="flex gap-2 mt-1">
                     <Link
@@ -116,8 +128,8 @@ export default function GeneratePage() {
                     </Link>
                     <button
                       onClick={() => {
-                        setKeyword('')
-                        window.location.reload()
+                        setKeyword("");
+                        window.location.reload();
                       }}
                       className="px-3 py-1.5 rounded-md text-[11px] font-medium bg-bg3 text-text2 border border-border hover:text-text transition-colors"
                     >
@@ -141,5 +153,5 @@ export default function GeneratePage() {
         </div>
       </div>
     </>
-  )
+  );
 }

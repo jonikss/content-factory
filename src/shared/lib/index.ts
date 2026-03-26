@@ -1,1 +1,1 @@
-export { buildHtml, buildMetaSnippet } from './html-builder'
+export { buildHtml, buildMetaSnippet } from "./html-builder";

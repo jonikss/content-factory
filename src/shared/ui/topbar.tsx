@@ -1,12 +1,12 @@
-'use client'
+"use client";
 
-import Link from 'next/link'
-import type { ReactNode } from 'react'
+import Link from "next/link";
+import type { ReactNode } from "react";
 
 interface TopbarProps {
-  title: string
-  subtitle?: string
-  actions?: ReactNode
+  title: string;
+  subtitle?: string;
+  actions?: ReactNode;
 }
 
 export function Topbar({ title, subtitle, actions }: TopbarProps) {
@@ -30,5 +30,5 @@ export function Topbar({ title, subtitle, actions }: TopbarProps) {
         )}
       </div>
     </div>
-  )
+  );
 }
